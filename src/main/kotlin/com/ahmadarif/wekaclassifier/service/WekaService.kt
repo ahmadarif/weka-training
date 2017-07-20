@@ -15,24 +15,7 @@ import java.io.File
 @Service
 class WekaService {
 
-    fun sample1(): String {
-        // file
-        val reader = BufferedReader(FileReader("C:\\Users\\ARIF\\Videos\\weather.arff"))
-        val data = Instances(reader)
-        reader.close()
-
-        // set class
-        data.setClassIndex(data.numAttributes() - 1)
-
-        val options = arrayOf("-U")
-        val tree = J48()         // new instance of tree
-        tree.options = options     // set the options
-        tree.buildClassifier(data)   // build classifier
-
-        return tree.toSummaryString()
-    }
-
-    fun sample2(file: File): String {
+    fun sample1(file: File): String {
         // load data
         val loader = ArffLoader()
         loader.setFile(file)
@@ -48,4 +31,5 @@ class WekaService {
 
         return tree.toSummaryString()
     }
+
 }

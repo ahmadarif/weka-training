@@ -23,14 +23,11 @@ class WekaController(val wekaService: WekaService, val storageService: StorageSe
         return "index"
     }
 
-    @GetMapping("/sample1")
-    fun sample1() = wekaService.sample1()
-
     @RequestMapping(value = "/upload", method = arrayOf(RequestMethod.POST))
     @Throws(IOException::class)
     fun uploadingPost(@RequestParam("uploadingFile") uploadedFile: MultipartFile, redirAttrs: RedirectAttributes): String {
         val file = storageService.store(uploadedFile)
-        val message = wekaService.sample2(file)
+        val message = wekaService.sample1(file)
 
         redirAttrs.addFlashAttribute("message", message)
         return "redirect:/"
