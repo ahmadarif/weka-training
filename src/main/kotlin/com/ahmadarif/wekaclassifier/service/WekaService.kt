@@ -1,5 +1,6 @@
 package com.ahmadarif.wekaclassifier.service
 
+import com.ahmadarif.wekaclassifier.extension.loader
 import org.springframework.stereotype.Service
 import weka.classifiers.trees.J48
 import weka.core.Instances
@@ -29,7 +30,23 @@ class WekaService {
         tree.options = options     // set the options
         tree.buildClassifier(data)   // build classifier
 
-        return tree.toSummaryString()
+        return tree.toString()
+    }
+
+    fun sample2(file: File): String {
+        // load data
+        val loader = loader(file)
+        val data = loader.structure
+
+        // set class
+        data.setClassIndex(data.numAttributes() - 1)
+
+        val options = arrayOf("-U")
+        val tree = J48()         // new instance of tree
+        tree.options = options     // set the options
+        tree.buildClassifier(data)   // build classifier
+
+        return tree.toString()
     }
 
 }
