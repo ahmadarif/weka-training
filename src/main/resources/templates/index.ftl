@@ -11,8 +11,11 @@
         <label>Class Name</label><br/>
         <input type="text" name="className" value="class" /><br/><br/>
 
-        <label>File</label><br/>
-        <input id="fileInput" type="file" name="uploadingFile" />
+        <label>File Model (Optional)</label><br/>
+        <input type="file" name="fileModel" /><br/><br/>
+
+        <label>File Arff</label><br/>
+        <input type="file" name="fileArff" />
     </p>
     <p>
         <input type="submit" value="Kuy">

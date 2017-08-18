@@ -114,25 +114,12 @@ class WekaService {
         // set class
         data.setClassIndex(classAttr.index())
 
-//        message.appendln("===== Data Summary =====")
-//        message.appendln(data.toSummaryString())
-
-
-        // build a J48 decision tree
-//        val model = J48()
-//        model.buildClassifier(data)
-
         //SVM
         val model = SMO()
 
         val optionStr = "-C 1.0 -L 0.001 -P 1.0E-12 -N 0 -V -1 -W 1 -K \"weka.classifiers.functions.supportVector.RBFKernel -C 250007 -G 0.01\""
         model.options = Utils.splitOptions(optionStr)
         model.buildClassifier(data)
-
-//        message.appendln()
-//        message.appendln("===== Data Summary =====")
-//        message.appendln(model.toString())
-
 
         // prediction
         message.appendln()
@@ -141,12 +128,12 @@ class WekaService {
         val eval = Evaluation(data)
         eval.crossValidateModel(model, data, 5, Random(1))
         message.appendln(eval.toSummaryString())
-//        for (i in 0..data.numInstances()-1) {
-//            val clsLabel = model.classifyInstance(data[i]).toInt()
-//            message.appendln("Prediction ke-${i+1} = ${data.classAttribute().value(clsLabel)}")
-//        }
 
-        message.appendln("Time = ${System.currentTimeMillis() - startTime}")
+        message.appendln("Time = ${milliToSecond(System.currentTimeMillis() - startTime)}")
         return message.toString()
+    }
+
+    private fun milliToSecond(mili: Long): Long {
+        return (mili / 1000)
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.io.IOException
-import java.util.*
 
 /**
  * Created by ARIF on 20-Jul-17.
@@ -26,14 +25,40 @@ class WekaController(val wekaService: WekaService, val storageService: StorageSe
     @RequestMapping(value = "/upload", method = arrayOf(RequestMethod.POST))
     @Throws(IOException::class)
     fun uploadingPost(
-            @RequestParam("uploadingFile") uploadedFile: MultipartFile,
-            @RequestParam("className") className: String,
+            @RequestParam(required = false) fileModel: MultipartFile,
+            @RequestParam(required = true) fileArff: MultipartFile,
+            @RequestParam className: String,
             redirAttrs: RedirectAttributes
     ): String {
-        val file = storageService.store(uploadedFile)
-        val message = wekaService.sample5(file, className)
+        reset()
+        if (fileArff.isEmpty) append("- File Arff tidak boleh kosong.")
+        if (className.isNullOrEmpty()) append("- Nama class harus diisi.")
+        if (errors.length != EMPTY) {
+            redirAttrs.addFlashAttribute("message", errors)
+            return "redirect:/"
+        }
 
-        redirAttrs.addFlashAttribute("message", message)
+        val arff = storageService.store(fileArff)
+        if (fileModel.isEmpty) {
+            val message = wekaService.sample5(arff, className)
+            redirAttrs.addFlashAttribute("message", message)
+        } else {
+            val model = storageService.store(fileModel)
+            redirAttrs.addFlashAttribute("message", "Modelnya kosong.")
+        }
+
         return "redirect:/"
+    }
+
+    private val errors = StringBuilder()
+    private val EMPTY = 14
+    private fun append(str: String) {
+        errors.append(str)
+        errors.appendln()
+    }
+    private fun reset() {
+        errors.setLength(0)
+        errors.append(":: Errors ::")
+        errors.appendln()
     }
 }
