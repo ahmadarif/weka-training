@@ -158,6 +158,17 @@ class WekaService {
         eval.crossValidateModel(model, data, 5, Random(1))
         message.appendln(eval.toSummaryString())
 
+        //which instance to predict class value
+        val index = 0
+
+        //perform your prediction
+        val value = model.classifyInstance(data.instance(index))
+
+        //get the name of the class value
+        val prediction = data.classAttribute().value(value.toInt())
+
+        println("The predicted value of instance ${Integer.toString(index)}: $prediction")
+
         message.appendln("Time = ${milliToSecond(System.currentTimeMillis() - startTime)}")
         return message.toString()
     }
