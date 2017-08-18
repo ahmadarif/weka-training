@@ -44,7 +44,8 @@ class WekaController(val wekaService: WekaService, val storageService: StorageSe
             redirAttrs.addFlashAttribute("message", message)
         } else {
             val model = storageService.store(fileModel)
-            redirAttrs.addFlashAttribute("message", "Modelnya kosong.")
+            val message = wekaService.sample6(model, arff, className)
+            redirAttrs.addFlashAttribute("message", message)
         }
 
         return "redirect:/"

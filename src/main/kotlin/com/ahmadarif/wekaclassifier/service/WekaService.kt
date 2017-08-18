@@ -2,12 +2,14 @@ package com.ahmadarif.wekaclassifier.service
 
 import com.ahmadarif.wekaclassifier.extension.loader
 import org.springframework.stereotype.Service
+import weka.classifiers.Classifier
 import weka.classifiers.Evaluation
 import weka.classifiers.bayes.NaiveBayesUpdateable
 import weka.classifiers.functions.SMO
 import weka.classifiers.trees.J48
 import weka.core.Instance
 import weka.core.Instances
+import weka.core.SerializationHelper
 import weka.core.Utils
 import weka.core.converters.ArffLoader
 import java.io.File
@@ -123,7 +125,34 @@ class WekaService {
 
         // prediction
         message.appendln()
-        message.appendln("===== Prediction Result =====")
+        message.appendln("===== Prediction Result (Data Train) =====")
+
+        val eval = Evaluation(data)
+        eval.crossValidateModel(model, data, 5, Random(1))
+        message.appendln(eval.toSummaryString())
+
+        message.appendln("Time = ${milliToSecond(System.currentTimeMillis() - startTime)}")
+        return message.toString()
+    }
+
+    fun sample6(modelFile: File, arff: File, className: String): String {
+        val message = StringBuffer()
+        val startTime = System.currentTimeMillis()
+
+        // load data
+        val loader = loader(arff)
+        val data = loader.dataSet
+        val classAttr = data.attribute(className)
+
+        // set class
+        data.setClassIndex(classAttr.index())
+
+        // model
+        val model = SerializationHelper.read(modelFile.absolutePath) as Classifier
+
+        // prediction
+        message.appendln()
+        message.appendln("===== Prediction Result (Load Model) =====")
 
         val eval = Evaluation(data)
         eval.crossValidateModel(model, data, 5, Random(1))
